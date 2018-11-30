@@ -1,5 +1,7 @@
 package trees.binarytrees;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 import trees.TreeNode;
@@ -154,6 +156,32 @@ public class TreeTraversal
 			previous = current;
  		}
 	}
+
+	/**
+	 * Push the root to a queue.
+	 * While queue is not empty, pop and print the the push the left and right of the node back to the queue
+	 * Continue this while queue is not empty. 
+	 * @param bTree
+	 */
+	public static <T> void levelOrderTraversal(TreeNode<T> bTree) {
+		if(bTree == null) {
+			return;
+		}
+		
+		Queue<TreeNode<T>> queue = new LinkedList<>();
+		queue.add(bTree);
+		while(! queue.isEmpty()) {
+			TreeNode<T>data = queue.poll();
+			System.out.println(data.getData());
+			if(data.getLeft() != null) {
+				queue.add(data.getLeft());
+			}
+			if(data.getRight() != null) {
+				queue.add(data.getRight());
+			}
+		}
+	}
+	
 }
 
 class TestTraversal
@@ -170,10 +198,11 @@ class TestTraversal
 		// TreeTraversal.preOrderTraversal(bTree);
 		// System.out.println("Non-Recursive PreOrder Traversal");
 		// TreeTraversal.preOrderTraversalNonRecursive(bTree);
-		System.out.println("Recursive Post-Order Traversal"); 
-		TreeTraversal.postOrderTraversal(bTree);
-		System.out.println("Non-Recursive Post-Order Traversal");
-		TreeTraversal.postOrderTraversalNonRecursive(bTree);
+//		System.out.println("Recursive Post-Order Traversal"); 
+//		TreeTraversal.postOrderTraversal(bTree);
+//		System.out.println("Non-Recursive Post-Order Traversal");
+//		TreeTraversal.postOrderTraversalNonRecursive(bTree);
+		TreeTraversal.levelOrderTraversal(bTree);
 	}
 
 	private static TreeNode<Integer> createTree()

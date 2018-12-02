@@ -101,6 +101,137 @@ public class TreeQuestions
 			return right;
 		}
 	}
+
+	/**
+	 * Traverse each level of the tree and keep pushing them to the queue.
+	 * End of each level should be marked by a NULL element in the queue.
+	 * Each time a NULL is popped from the queue, the value of level should be incremented by 1.
+	 * Continue doing this till the queue is empty.
+	 * @param bTree
+	 * @return
+	 */
+	public static int getHeightOfBTreeNonRecursive(TreeNode<Integer> bTree) {
+		if(bTree == null) {
+			return 0;
+		}
+		
+		int level = 0;
+		Queue<TreeNode<Integer>> queue = new LinkedList<>();
+		// Push the root element to the queue
+		queue.add(bTree);
+		// Mark the end of the level by inserting a NULL
+		queue.add(null);
+		
+		while(! queue.isEmpty()) {
+			TreeNode<Integer> node = queue.poll();
+			if(node == null) { // We have reached the end of one level
+				if(! queue.isEmpty()) { // To avoid last NULL recursion
+					queue.add(null); // Pushed a null to mark the end of the level 
+									//since we already pushed left and right nodes of the level.
+				}
+				++level;
+			}
+			else {
+				if(node.getLeft() != null) {
+					queue.add(node.getLeft());
+				}
+				if(node.getRight() != null) {
+					queue.add(node.getRight());
+				}
+			}
+		}
+		
+		return level;
+	}
+	
+	/**
+	 * Find the number of leaf nodes in a tree
+	 * @param bTree
+	 */
+	public static int numLeafNodes(TreeNode<Integer> bTree ) {
+		if(bTree == null) {
+			return 0;
+		}
+		else if(bTree.getLeft() == null && bTree.getRight() == null) {
+			return 1;
+		}
+		else {
+			int leaves = 0;
+			if(bTree.getLeft() != null) {
+				leaves += numLeafNodes(bTree.getLeft());
+			}
+			if(bTree.getRight() != null) {
+				leaves += numLeafNodes(bTree.getRight());
+			}
+			return leaves;	
+		}
+	}
+	
+	public static int numLeafNodesNonRecursive(TreeNode<Integer> bTree ) {
+		if(bTree == null) {
+			return 0;
+		}
+		int leaves = 0;
+		Queue<TreeNode<Integer>> queue = new LinkedList<>();
+		queue.add(bTree);
+		while(! queue.isEmpty()) {
+			TreeNode<Integer> node = queue.poll();
+			if( node.getLeft() == null && node.getRight() == null ) { // Leaf node
+				++leaves;
+			}
+			else {
+				if(node.getLeft() != null) {
+					queue.add(node.getLeft());
+				}
+				if(node.getRight() != null) {
+					queue.add(node.getRight());
+				}
+			}
+		}
+		
+		return leaves;
+	}
+	
+	/**
+	 * Finding the number of full nodes in a tree.
+	 * Full node => A node that has both left and right child node.
+	 */
+	public static int numFullNodes(TreeNode<Integer> bTree) {
+		if (bTree == null) {
+			return 0;
+		}
+
+		
+		if ( bTree.getLeft() == null || bTree.getRight() == null ) {
+			return 0;
+		}
+		
+		return 1 + numFullNodes(bTree.getLeft()) + numFullNodes(bTree.getRight());
+	}
+	
+	public static int numFullNodesNonRecursive(TreeNode<Integer> bTree) {
+		if(bTree == null) {
+			return 0;
+		}
+		
+		int numFullNodes = 0;		
+		Queue<TreeNode<Integer>> queue = new LinkedList<>();
+		queue.add(bTree);
+		while(!queue.isEmpty()) {
+			TreeNode<Integer> node = queue.poll();
+			if(node.getLeft() != null && node.getRight() != null) {
+				++numFullNodes;
+			}
+			if(node.getLeft() != null) {
+				queue.add(node.getLeft());
+			}
+			if(node.getRight() != null) {
+				queue.add(node.getRight());
+			}
+		}
+		
+		return numFullNodes;
+	}
 }
 
 class TreeQuestionsMain {
@@ -114,6 +245,11 @@ class TreeQuestionsMain {
 		System.out.println("Size of tree : " + TreeQuestions.sizeOfBinaryTree(bTree));
 		TreeQuestions.levelOrderTraversalInReverse(bTree);
 		System.out.println("Height of the tree is : " + TreeQuestions.getHeightOfBTree(bTree));
+		System.out.println("Height of the tree is : " + TreeQuestions.getHeightOfBTreeNonRecursive(bTree));
+		System.out.println("Number of leaf nodes : " + TreeQuestions.numLeafNodes(bTree));
+		System.out.println("Number of leaf nodes : " + TreeQuestions.numLeafNodesNonRecursive(bTree));
+		System.out.println("Number of full nodes : " + TreeQuestions.numFullNodes(bTree));
+		System.out.println("Number of full nodes : " + TreeQuestions.numFullNodesNonRecursive(bTree));
 	}
 	
 	private static TreeNode<Integer> createTree()

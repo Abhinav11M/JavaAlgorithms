@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
 import javafx.util.Pair;
+import trees.binarytrees.TreeTraversal;
 
 public class TreeQuestions
 {
@@ -512,7 +513,14 @@ public class TreeQuestions
 		System.out.println();
 	}
 	
-	
+	/**
+	 * Find if the path for the given sum exists in the tree. Also return the path if any exists.
+	 * @param bTree
+	 * @param sumOfNodes
+	 * @param path
+	 * @param pathIndex
+	 * @return
+	 */
 	public static Pair<Boolean, Pair<Integer, int[]>> hasPathSum(TreeNode<Integer> bTree, int sumOfNodes, int[] path, int pathIndex) {
 		if(bTree == null) {
 			return new Pair<Boolean, Pair<Integer, int[]>>(false, null);
@@ -552,6 +560,62 @@ public class TreeQuestions
 		}
 		return hasPathSum(bTree.getLeft(), sumOfNodes) || hasPathSum(bTree.getRight(), sumOfNodes);
 	}
+	
+	
+	/**
+	 * Returns the sum of all the nodes of the binary tree.
+	 * @param bTree
+	 * @param sum
+	 * @return
+	 */
+	public static int getSumOfBTree(TreeNode<Integer> bTree, int sum) {
+		if(bTree == null) {
+			return 0;
+		}
+		return bTree.getData() + getSumOfBTree(bTree.getLeft()) + getSumOfBTree(bTree.getRight());
+	}
+	
+	/**
+	 * Returns the sum of all the nodes of the binary tree.
+	 * @param bTree
+	 * @return
+	 */
+	public static int getSumOfBTree(TreeNode<Integer> bTree) {
+		if(bTree == null) {
+			return 0;
+		}
+		
+		return getSumOfBTree(bTree, 0);
+	}
+	
+	/**
+	 * Get the mirror image of a binary tree
+	 */
+	public static <T> void getMirrorImage(TreeNode<T> bTree) {
+		if(bTree == null) {
+			return;
+		}
+		
+		TreeNode<T> temp = bTree.getLeft();
+		bTree.setLeft(bTree.getRight());
+		bTree.setRight(temp);
+		
+		getMirrorImage(bTree.getLeft());
+		getMirrorImage(bTree.getRight());
+	}
+	
+	/**
+	 * Check if the binary trees are mirror images of one another.
+	 */
+	public static <T> boolean isMirrorImage(TreeNode<T> bTree1, TreeNode<T> bTree2) {
+		if(bTree1 == null && bTree2 == null) {
+			return true;
+		}
+		if(bTree1.getData() != bTree2.getData()) {
+			return false;
+		}
+		return isMirrorImage(bTree1.getLeft(), bTree2.getRight()) && isMirrorImage(bTree1.getRight(), bTree2.getLeft());
+	}
 }
 
 class TreeQuestionsMain {
@@ -570,24 +634,24 @@ class TreeQuestionsMain {
 //		System.out.println("Number of leaf nodes : " + TreeQuestions.numLeafNodesNonRecursive(bTree));
 //		System.out.println("Number of full nodes : " + TreeQuestions.numFullNodes(bTree));
 //		System.out.println("Number of full nodes : " + TreeQuestions.numFullNodesNonRecursive(bTree));
-		
-		TreeNode<Integer> bTree = createTreeWithHalfNodes();
-//		TreeTraversal.inOrderTraversal(bTree);
-//		System.out.println("Number of half nodes : " + TreeQuestions.numHalfNodes(bTree));
-		
-		TreeNode<Integer> bTreeAllNodes = createTree();
-		
-		System.out.println(TreeQuestions.isStructurallyIdentical(bTree, bTreeAllNodes));
-		System.out.println(TreeQuestions.isStructurallyIdentical(bTree, bTree));
-		System.out.println(TreeQuestions.isStructurallyIdentical(bTreeAllNodes, bTreeAllNodes));
-		
-//		System.out.println(TreeQuestions.getHeightOfBTree(bTreeAllNodes));
+//		
+//		TreeNode<Integer> bTree = createTreeWithHalfNodes();
+////		TreeTraversal.inOrderTraversal(bTree);
+////		System.out.println("Number of half nodes : " + TreeQuestions.numHalfNodes(bTree));
+//		
+//		TreeNode<Integer> bTreeAllNodes = createTree();
+//		
+//		System.out.println(TreeQuestions.isStructurallyIdentical(bTree, bTreeAllNodes));
+//		System.out.println(TreeQuestions.isStructurallyIdentical(bTree, bTree));
+//		System.out.println(TreeQuestions.isStructurallyIdentical(bTreeAllNodes, bTreeAllNodes));
+//		
+////		System.out.println(TreeQuestions.getHeightOfBTree(bTreeAllNodes));
+////		System.out.println(TreeQuestions.getHeightOfBTreeNonRecursive(bTreeAllNodes));
 //		System.out.println(TreeQuestions.getHeightOfBTreeNonRecursive(bTreeAllNodes));
-		System.out.println(TreeQuestions.getHeightOfBTreeNonRecursive(bTreeAllNodes));
-		System.out.println(TreeQuestions.heightOfTreeNonRecursive(bTreeAllNodes));
-		
-		System.out.println(TreeQuestions.getMaxSumAtLevel(bTreeAllNodes));
-		System.out.println(TreeQuestions.getMaxSumAtLevel(bTree));
+//		System.out.println(TreeQuestions.heightOfTreeNonRecursive(bTreeAllNodes));
+//		
+//		System.out.println(TreeQuestions.getMaxSumAtLevel(bTreeAllNodes));
+//		System.out.println(TreeQuestions.getMaxSumAtLevel(bTree));
 		
 //		Stack<Integer> s = new Stack<>();
 //		s.add(0);
@@ -599,27 +663,42 @@ class TreeQuestionsMain {
 //		s.add(6);
 //		TreeQuestions.printStack(s);
 		
-		System.out.println("----------------------------------------------");
-		TreeQuestions.printAllRootToLeafPaths(bTreeAllNodes);
-		System.out.println("----------------------------------------------");
-		TreeQuestions.printAllRootToLeafPaths(bTree);
-		System.out.println("----------------------------------------------");
-		TreeQuestions.printAllRootToLeafPathsNonRecursive(bTreeAllNodes);
-		System.out.println("----------------------------------------------");
-		TreeQuestions.printAllRootToLeafPathsNonRecursive(bTree);
-		System.out.println("----------------------------------------------");
-		System.out.println(TreeQuestions.hasPathSum(bTreeAllNodes, 8));
-		System.out.println(TreeQuestions.hasPathSum(bTreeAllNodes, 6));
-		System.out.println("----------------------------------------------");
-		int[] arr = new int[20];
-		Pair<Boolean, Pair<Integer, int[]>>valueAndPath = TreeQuestions.hasPathSum(bTreeAllNodes, 8, arr, 0);
-		if(valueAndPath.getKey() == true) {
-			System.out.println("Path Found");
-			TreeQuestions.printPath(valueAndPath.getValue().getValue(), valueAndPath.getValue().getKey());
-		}
-		else {
-			System.out.println("Path Not Found");	
-		}
+//		System.out.println("----------------------------------------------");
+//		TreeQuestions.printAllRootToLeafPaths(bTreeAllNodes);
+//		System.out.println("----------------------------------------------");
+//		TreeQuestions.printAllRootToLeafPaths(bTree);
+//		System.out.println("----------------------------------------------");
+//		TreeQuestions.printAllRootToLeafPathsNonRecursive(bTreeAllNodes);
+//		System.out.println("----------------------------------------------");
+//		TreeQuestions.printAllRootToLeafPathsNonRecursive(bTree);
+//		System.out.println("----------------------------------------------");
+//		System.out.println(TreeQuestions.hasPathSum(bTreeAllNodes, 8));
+//		System.out.println(TreeQuestions.hasPathSum(bTreeAllNodes, 6));
+//		System.out.println("----------------------------------------------");
+//		int[] arr = new int[20];
+//		Pair<Boolean, Pair<Integer, int[]>>valueAndPath = TreeQuestions.hasPathSum(bTreeAllNodes, 8, arr, 0);
+//		if(valueAndPath.getKey() == true) {
+//			System.out.println("Path Found");
+//			TreeQuestions.printPath(valueAndPath.getValue().getValue(), valueAndPath.getValue().getKey());
+//		}
+//		else {
+//			System.out.println("Path Not Found");	
+//		}
+//		
+//		System.out.println("Sum of BTree : " + TreeQuestions.getSumOfBTree(bTreeAllNodes));
+//		System.out.println("Sum of BTree : " + TreeQuestions.getSumOfBTree(bTree));
+//		TreeNode<Integer> bTreeWithAllNodes = createTree();
+//		TreeNode<Integer> bTree = createTreeWithHalfNodes();
+//		System.out.println("Before Rotation");
+//		TreeTraversal.inOrderTraversal(bTree);
+//		TreeQuestions.getMirrorImage(bTreeWithAllNodes);
+//		TreeQuestions.getMirrorImage(bTree);
+//		System.out.println("After Rotation");
+//		TreeTraversal.inOrderTraversal(bTree);
+		TreeNode<Integer> bTree1 = createTree();
+		TreeNode<Integer> bTree2 = createTree();
+		TreeQuestions.getMirrorImage(bTree2);
+		System.out.println(TreeQuestions.isMirrorImage(bTree1, bTree2));
 	}
 	
 	private static TreeNode<Integer> createTree()

@@ -1,10 +1,12 @@
 package trees;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
-
-import trees.binarytrees.TreeTraversal;
+import javafx.util.Pair;
 
 public class TreeQuestions
 {
@@ -383,6 +385,173 @@ public class TreeQuestions
 		}
 		return maxSum;
 	}
+	
+	/**
+	 * Print the contents of a stack
+	 */
+	public static <T> void printStack(Stack<T> contents) {
+		ListIterator<T> it = contents.listIterator(0);
+		while(it.hasNext()) {
+			System.out.print(it.next() + "=>");
+		}
+		System.out.println();
+	}
+	
+	/**
+	 * Uses a algo similar to inorder traversal to find all the root to leaf nodes path.
+	 * @param bTree
+	 * @param stack
+	 */
+	private static void printAllRootToLeafPaths(TreeNode<Integer> bTree, Stack<Integer> stack) {
+		if(bTree == null) {
+			return;
+		}
+		
+		stack.push(bTree.getData());
+		printAllRootToLeafPaths(bTree.getLeft(), stack);
+
+		if(bTree.getLeft() == null && bTree.getRight() == null) {
+			printStack(stack);
+		}
+
+		printAllRootToLeafPaths(bTree.getRight(), stack);
+		
+		stack.pop();
+	}
+
+	/**
+	 * Prints the path of the root to leaf nodes saved in the array
+	 * @param paths
+	 * @param pathIndex
+	 */
+	public static void printPath(int[] paths, int pathIndex) {
+		for(int i = 0; i < pathIndex; ++i) {
+			System.out.print(paths[i] + "=>");
+		}
+		System.out.println();
+	}
+	
+	/**
+	 * Method 2 to find out the paths from the root to all the leaf nodes.
+	 * We keep saving the paths in an array and print the array when a leaf is hit.
+	 * @param bTree
+	 * @param paths
+	 * @param pathIndex
+	 */
+	public static void printAllRootToLeafPaths(TreeNode<Integer> bTree, int[] paths, int pathIndex) {
+		if(bTree == null) {
+			return;
+		}
+		
+		paths[pathIndex++] = bTree.getData();
+		
+		if(bTree.getLeft() == null && bTree.getRight() == null) { // Leaf node. Print the path
+			printPath(paths, pathIndex);
+		}
+		printAllRootToLeafPaths(bTree.getLeft(), paths, pathIndex);
+		printAllRootToLeafPaths(bTree.getRight(), paths, pathIndex);
+	}
+
+	/**
+	 * Get all the paths from root to the leaf nodes. </br>
+	 * <a>https://www.youtube.com/watch?v=zIkDfgFAg60</a>
+	 */
+	public static void printAllRootToLeafPaths(TreeNode<Integer> bTree) {
+//		Stack<Integer> stack = new Stack<>();
+//		printAllRootToLeafPaths(bTree, stack);
+		int[] paths = new int[20];
+		printAllRootToLeafPaths(bTree, paths, 0);
+	}
+	
+	/**
+	 * Get all paths from the root to leaf nodes in a non-recursive way
+	 */
+	public static void printAllRootToLeafPathsNonRecursive(TreeNode<Integer> bTree) {
+		if(bTree == null) {
+			return;
+		}
+		Map<TreeNode<Integer>, TreeNode<Integer>> parent = new HashMap<>();
+		Queue<TreeNode<Integer>> queue = new LinkedList<>();
+		queue.add(bTree);
+		
+		while(!queue.isEmpty()) {
+			TreeNode<Integer> item = queue.poll();
+			if(item.getLeft() == null && item.getRight() == null) { // Encountered a leaf node
+				printPathFromTopToBottom(item, parent);
+			}
+			
+			if(item.getLeft() != null) {
+				queue.add(item.getLeft());
+				parent.put(item.getLeft(), item);
+			}
+
+			if(item.getRight() != null) {
+				queue.add(item.getRight());
+				parent.put(item.getRight(), item);
+			}
+		}
+	}
+
+	private static void printPathFromTopToBottom(TreeNode<Integer> item,
+			Map<TreeNode<Integer>, TreeNode<Integer>> parent) {
+		if(item == null) {
+			return;
+		}
+		
+		Stack<TreeNode<Integer>> stack = new Stack<>();
+		stack.add(item);
+		
+		while(parent.get(item) != null) {
+			stack.add(parent.get(item));
+			item = parent.get(item);
+		}
+		
+		while(!stack.isEmpty()) {
+			System.out.print(stack.pop().getData() + "=>");
+		}
+		System.out.println();
+	}
+	
+	
+	public static Pair<Boolean, Pair<Integer, int[]>> hasPathSum(TreeNode<Integer> bTree, int sumOfNodes, int[] path, int pathIndex) {
+		if(bTree == null) {
+			return new Pair<Boolean, Pair<Integer, int[]>>(false, null);
+		}
+		sumOfNodes -= bTree.getData();
+		path[pathIndex++] = bTree.getData();
+		if(sumOfNodes == 0) {
+			Pair<Integer, int[]> childPair = new Pair<>(pathIndex, path);
+			return new Pair<Boolean, Pair<Integer, int[]>>(true, childPair);
+		}
+		Pair<Boolean, Pair<Integer, int[]>> lResult = hasPathSum(bTree.getLeft(), sumOfNodes, path, pathIndex);
+		if(lResult.getKey() == true) {
+			return lResult;
+		}
+		
+		Pair<Boolean, Pair<Integer, int[]>> rResult = hasPathSum(bTree.getRight(), sumOfNodes, path, pathIndex);
+		if(rResult.getKey() == true) {
+			return rResult;
+		}
+		return new Pair<Boolean, Pair<Integer, int[]>>(false, null);
+	}
+	
+	/**
+	 * Find if the path for the given sum exists in the tree.
+	 * @param bTree
+	 * @param sumOfNodes
+	 * @return
+	 */
+	public static boolean hasPathSum(TreeNode<Integer> bTree, int sumOfNodes) {
+		if(bTree == null) {
+			return false;
+		}
+		
+		sumOfNodes -= bTree.getData();
+		if(sumOfNodes == 0) {
+			return true;
+		}
+		return hasPathSum(bTree.getLeft(), sumOfNodes) || hasPathSum(bTree.getRight(), sumOfNodes);
+	}
 }
 
 class TreeQuestionsMain {
@@ -419,6 +588,38 @@ class TreeQuestionsMain {
 		
 		System.out.println(TreeQuestions.getMaxSumAtLevel(bTreeAllNodes));
 		System.out.println(TreeQuestions.getMaxSumAtLevel(bTree));
+		
+//		Stack<Integer> s = new Stack<>();
+//		s.add(0);
+//		s.add(1);
+//		s.add(2);
+//		s.add(3);
+//		s.add(4);
+//		s.add(5);
+//		s.add(6);
+//		TreeQuestions.printStack(s);
+		
+		System.out.println("----------------------------------------------");
+		TreeQuestions.printAllRootToLeafPaths(bTreeAllNodes);
+		System.out.println("----------------------------------------------");
+		TreeQuestions.printAllRootToLeafPaths(bTree);
+		System.out.println("----------------------------------------------");
+		TreeQuestions.printAllRootToLeafPathsNonRecursive(bTreeAllNodes);
+		System.out.println("----------------------------------------------");
+		TreeQuestions.printAllRootToLeafPathsNonRecursive(bTree);
+		System.out.println("----------------------------------------------");
+		System.out.println(TreeQuestions.hasPathSum(bTreeAllNodes, 8));
+		System.out.println(TreeQuestions.hasPathSum(bTreeAllNodes, 6));
+		System.out.println("----------------------------------------------");
+		int[] arr = new int[20];
+		Pair<Boolean, Pair<Integer, int[]>>valueAndPath = TreeQuestions.hasPathSum(bTreeAllNodes, 8, arr, 0);
+		if(valueAndPath.getKey() == true) {
+			System.out.println("Path Found");
+			TreeQuestions.printPath(valueAndPath.getValue().getValue(), valueAndPath.getValue().getKey());
+		}
+		else {
+			System.out.println("Path Not Found");	
+		}
 	}
 	
 	private static TreeNode<Integer> createTree()

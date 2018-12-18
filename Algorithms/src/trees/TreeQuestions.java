@@ -616,6 +616,30 @@ public class TreeQuestions
 		}
 		return isMirrorImage(bTree1.getLeft(), bTree2.getRight()) && isMirrorImage(bTree1.getRight(), bTree2.getLeft());
 	}
+	
+	/**
+	 * Calculate the LCA (Least Common Ancestor) of two given nodes.
+	 * TODO: This algo has a bug. Even if only one node is found, it will simply return that without complaining that the other node does not exist.
+	 */
+	public static TreeNode<Integer> getLCAOfBTree(TreeNode<Integer> bTree, int n1, int n2) {
+		if(bTree == null) {
+			return null;
+		}
+		// If any key(n1) matches the root, then definitely the other key(n2) will be a child of the ancestor.
+		if(bTree.getData() == n1 || bTree.getData() == n2) {
+			return bTree;
+		}
+		
+		TreeNode<Integer> leftSubtree = getLCAOfBTree(bTree.getLeft(), n1, n2);
+		TreeNode<Integer> rightSubtree = getLCAOfBTree(bTree.getRight(), n1, n2);
+		
+		if(leftSubtree != null && rightSubtree != null) { //Both the values are found in the subtree. So the current node becomes the ancestor
+			return bTree;
+		}
+		
+		//Else return whatever is found to the previous level.
+		return leftSubtree != null ? leftSubtree : rightSubtree;
+	}
 }
 
 class TreeQuestionsMain {
@@ -699,6 +723,8 @@ class TreeQuestionsMain {
 		TreeNode<Integer> bTree2 = createTree();
 		TreeQuestions.getMirrorImage(bTree2);
 		System.out.println(TreeQuestions.isMirrorImage(bTree1, bTree2));
+		TreeNode<Integer> res = TreeQuestions.getLCAOfBTree(bTree1, 2, 10);
+		System.out.println("LCA is " + res.getData());
 	}
 	
 	private static TreeNode<Integer> createTree()

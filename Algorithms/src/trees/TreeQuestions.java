@@ -1,5 +1,6 @@
 package trees;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -11,6 +12,7 @@ import trees.binarytrees.TreeTraversal;
 
 public class TreeQuestions
 {
+	private static Integer preOrderIndex = 0;
 	/**
 	 * Find the maximum element in a binary tree
 	 */
@@ -640,6 +642,126 @@ public class TreeQuestions
 		//Else return whatever is found to the previous level.
 		return leftSubtree != null ? leftSubtree : rightSubtree;
 	}
+	
+	/*
+	 * Create the tree from the Inorder and Preorder traversal sequences
+	 * Note : If only if one of the traversal methods is Inorder, then the tree can be constructed uniquely, otherwise not.
+	 * <p>Algo:<br/>
+	 * Select the element from the Preorder index, pick the next element in the next recursive call.<br/>
+	 * Create a new node with the data as the selected Preorder element.</br>
+	 * Find the selected elements index in Inorder. Let the index be inOrderIndex.</br>
+	 * Call the BuildBinaryTree function recursively for elements before inOrderIndex and make the built tree as the left subtree of the new node.</br>
+	 * Call the BuildBinaryTree function recursively for the elements after the inOrderIndex and make the built tree as the right subtree of the new node.</br>
+	 * Return the new node.</br>
+	 * </p>
+	 */
+	public static TreeNode<Integer> createBinaryTreeFromTraversal(int[] inOrderSequence, int[] preOrderSequence) {
+		return createBinaryTreeFromTraversal(inOrderSequence, preOrderSequence, 0, inOrderSequence.length - 1);
+	}
+	
+	public static TreeNode<Integer> createBinaryTreeFromTraversal(int[] inOrderSequence, int[] preOrderSequence, 
+			int inOrderStartIndex, int inOrderEndIndex) {
+		if(inOrderStartIndex > inOrderEndIndex) {
+			return null;
+		}
+		
+		TreeNode<Integer> bTree = new TreeNode<Integer>(preOrderSequence[preOrderIndex]);
+		++preOrderIndex;
+		
+		// Find the index of data in inOrderSequence
+		int idxInInOrderSequence = findIndexOfElementInSequence(inOrderSequence, bTree.getData());
+		bTree.setLeft(createBinaryTreeFromTraversal(inOrderSequence, preOrderSequence, inOrderStartIndex, idxInInOrderSequence - 1));
+		bTree.setRight(createBinaryTreeFromTraversal(inOrderSequence, preOrderSequence, idxInInOrderSequence + 1, inOrderEndIndex));
+		
+		return bTree;
+	}
+
+	private static int findIndexOfElementInSequence(int[] inOrderSequence, int val) {
+		for(int i = 0; i < inOrderSequence.length; ++i) {
+			if(inOrderSequence[i] == val) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * Print all the ancestors of a node.
+	 */
+	public static boolean printAllAncestors(TreeNode<Integer> bTree, int nodeToFind) {
+		if(bTree == null) {
+			return false;
+		}
+		if(bTree.getData() == nodeToFind) {
+			System.out.print(bTree.getData() + "<=");
+			return true;
+		}
+		
+		boolean leftTreeSearch = printAllAncestors(bTree.getLeft(), nodeToFind);
+		if(leftTreeSearch == true) {
+			System.out.print(bTree.getData() + "<=");
+			return true;
+		}
+		
+		boolean rightTreeSearch = printAllAncestors(bTree.getRight(), nodeToFind);
+		if(rightTreeSearch == true) {
+			System.out.print(bTree.getData() + "<=");
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Print tree nodes in zig-zag order
+	 */
+	public static void printTreeInZigZagOrder(TreeNode<Integer> bTree) {
+		if(bTree == null) {
+			return;
+		}
+		
+		Stack<TreeNode<Integer>> s1 = new Stack<>();
+		Stack<TreeNode<Integer>> s2 = new Stack<>();
+		
+		s1.push(bTree);
+		boolean leftToRight = true;
+		
+		while (!s1.empty() || !s2.empty()) {
+			if (!s1.empty()) {
+				// Push all child elements to s2 in the required direction
+				while (!s1.isEmpty()) {
+					TreeNode<Integer> node = s1.pop();
+					System.out.println(node.getData());
+					if (leftToRight) {
+						if (node.getLeft() != null) s2.add(node.getLeft());
+						if (node.getRight() != null) s2.add(node.getRight());
+					} 
+					else {
+						if (node.getRight() != null) s2.add(node.getRight());
+						if (node.getLeft() != null) s2.add(node.getLeft());
+					}
+				}
+				// Reverse the direction.
+				leftToRight = !leftToRight;
+			}
+			else if(!s2.empty()) {
+				// Push all child elements to s1 in the required direction
+				while(!s2.isEmpty()) {
+					TreeNode<Integer> node = s2.pop();
+					System.out.println(node.getData());
+					if (leftToRight) {
+						if (node.getLeft() != null) s1.add(node.getLeft());
+						if (node.getRight() != null) s1.add(node.getRight());
+					} 
+					else {
+						if (node.getRight() != null) s1.add(node.getRight());
+						if (node.getLeft() != null) s1.add(node.getLeft());
+					}
+				}
+				leftToRight = !leftToRight;
+			}
+		}
+	}
+	
 }
 
 class TreeQuestionsMain {
@@ -719,12 +841,21 @@ class TreeQuestionsMain {
 //		TreeQuestions.getMirrorImage(bTree);
 //		System.out.println("After Rotation");
 //		TreeTraversal.inOrderTraversal(bTree);
-		TreeNode<Integer> bTree1 = createTree();
-		TreeNode<Integer> bTree2 = createTree();
-		TreeQuestions.getMirrorImage(bTree2);
-		System.out.println(TreeQuestions.isMirrorImage(bTree1, bTree2));
-		TreeNode<Integer> res = TreeQuestions.getLCAOfBTree(bTree1, 2, 10);
-		System.out.println("LCA is " + res.getData());
+//		TreeNode<Integer> bTree1 = createTree();
+//		TreeNode<Integer> bTree2 = createTree();
+//		TreeQuestions.getMirrorImage(bTree2);
+//		System.out.println(TreeQuestions.isMirrorImage(bTree1, bTree2));
+//		TreeNode<Integer> res = TreeQuestions.getLCAOfBTree(bTree1, 2, 10);
+//		System.out.println("LCA is " + res.getData());
+		TreeNode<Integer> bTree = TreeQuestions.createBinaryTreeFromTraversal(new int[] {4,2,5,1,6,3,7}, new int[] {1,2,4,5,3,6,7});
+//		System.out.println("InOrder");
+//		TreeTraversal.inOrderTraversal(bTree);
+//		System.out.println("PreOrder");
+//		TreeTraversal.preOrderTraversal(bTree);
+//		System.out.println("PostOrder");
+//		TreeTraversal.postOrderTraversal(bTree);
+//		TreeQuestions.printAllAncestors(bTree, 7);
+		TreeQuestions.printTreeInZigZagOrder(bTree);
 	}
 	
 	private static TreeNode<Integer> createTree()

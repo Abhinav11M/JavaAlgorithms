@@ -13,6 +13,7 @@ import trees.binarytrees.TreeTraversal;
 public class TreeQuestions
 {
 	private static Integer preOrderIndex = 0;
+	private static Integer preOrderIndex1 = 0;
 	/**
 	 * Find the maximum element in a binary tree
 	 */
@@ -762,6 +763,58 @@ public class TreeQuestions
 		}
 	}
 	
+	/**
+	 * Given a preorder traversal, where I represents the internal nodes and L represents the leaf nodes create the binary tree
+	 * @param preOrder
+	 * @return
+	 */
+	public static TreeNode<Character> createTreeFromPreOrder(char[] preOrder) {
+		if(preOrder[preOrderIndex1] == 'L') {
+			return new TreeNode<Character>(preOrder[preOrderIndex1++]);
+		}
+		
+		TreeNode<Character> newNode = new TreeNode<Character>(preOrder[preOrderIndex1++]);
+		newNode.setLeft(createTreeFromPreOrder(preOrder));
+		newNode.setRight(createTreeFromPreOrder(preOrder));
+		
+		return newNode;
+	}
+	
+	/**
+	 * Checks if two binary trees are quasi-isomorphic or not.
+	 * btree1 and bTree2 are quasi-isomorphic if bTree1 can be transformed into bTree2 by swapping
+	 * left and right children of some of the nodes of bTree1.
+	 * 
+	 * @param bTree1: binary tree1
+	 * @param bTree2: binary tree2
+	 * @return: return true/false if the trees are quasi-isomorphic or not.
+	 */
+	public static <T> boolean isQuasiIsomorphic(TreeNode<T> bTree1, TreeNode<T> bTree2) {
+		if(bTree1 == null && bTree2 == null) {
+			return true;
+		}
+		if((bTree1 == null && bTree2 != null) || (bTree1 != null && bTree2 == null)) {
+			return false;
+		}
+		
+		return ((isQuasiIsomorphic(bTree1.getLeft(), bTree2.getLeft()) && isQuasiIsomorphic(bTree1.getRight(), bTree2.getRight())) ||
+				(isQuasiIsomorphic(bTree1.getLeft(), bTree2.getRight()) && isQuasiIsomorphic(bTree1.getRight(), bTree2.getLeft())));
+	}
+	
+	/**
+	 * Check if two binary trees are isomorphic
+	 */
+	public static <T> boolean isIsomorphic(TreeNode<T> bTree1, TreeNode<T> bTree2) {
+		if(bTree1 == null && bTree2 == null) {
+			return true;
+		}
+		
+		if((bTree1 == null && bTree2 != null) || (bTree1 != null && bTree2 == null)) {
+			return false;
+		}
+		
+		return isIsomorphic(bTree1.getLeft(), bTree2.getLeft()) && isIsomorphic(bTree1.getRight(), bTree2.getRight());
+ 	}
 }
 
 class TreeQuestionsMain {
@@ -856,6 +909,10 @@ class TreeQuestionsMain {
 //		TreeTraversal.postOrderTraversal(bTree);
 //		TreeQuestions.printAllAncestors(bTree, 7);
 		TreeQuestions.printTreeInZigZagOrder(bTree);
+		System.out.println("****************");
+		TreeNode<Character> bTreeChar = TreeQuestions
+				.createTreeFromPreOrder(new char[] { 'I', 'I', 'L', 'L', 'I', 'I', 'L', 'L', 'I', 'L', 'L' });
+		TreeTraversal.preOrderTraversal(bTreeChar);
 	}
 	
 	private static TreeNode<Integer> createTree()

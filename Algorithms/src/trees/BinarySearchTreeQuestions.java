@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import trees.binarytrees.TreeTraversal;
+
 public class BinarySearchTreeQuestions {
 
 	
@@ -196,6 +198,143 @@ public class BinarySearchTreeQuestions {
 		}
 	}
 	
+	/**
+	 * Delete node from a BST
+	 * <p>
+	 * 	Algo:
+	 * 		Case1: If the node to be deleted is a leaf node => Just delete it by setting the parent left/right to null.
+	 * 		Case2: If the node to be deleted has one child => Just set the child of the node to be deleted as the child of its parent.
+	 * 		Case3: If the node to be deleted has both the child nodes => Replace the node to be deleted with the largest node in the left subtree.
+	 * 																		Delete the node used for replacing. The largest node will always be a right node.
+	 * 																		So if the largest node is a leaf node, just simply set its parent to point to null.
+	 * 																		If it has a left child, then the parent of the largest node now should point to this
+	 * 																		child. So rather call, delete recursively on this node and everything should 
+	 * 																		be taken care of.
+	 * </p>
+	 * @param args
+	 */
+	public void deleteElementFromBST(TreeNode<Integer> root, int elementToBeDeleted) {
+		deleteElementFromBST(root, null, elementToBeDeleted);
+	}
+	
+	private void deleteElementFromBST(TreeNode<Integer> root, TreeNode<Integer> parent, int elementToBeDeleted) {
+		// Find the element
+		if(root.getData() == elementToBeDeleted) {
+			deleteElementFromBST(root, parent);
+		}
+		else if(elementToBeDeleted > root.getData()) {
+			deleteElementFromBST(root.getRight(), root, elementToBeDeleted); // Find in the right subtree
+		}
+		else {
+			deleteElementFromBST(root.getLeft(), root, elementToBeDeleted); // Find in the left subtree
+		}	
+	}
+	
+	private void deleteElementFromBST(TreeNode<Integer> root, TreeNode<Integer> parent) {
+		// Leaf node check
+		if (root.getLeft() == null && root.getRight() == null) {
+			if (parent == null) {
+				root = null;
+				return;
+			}
+			else {
+				if (parent.getRight() == root) {
+					parent.setRight(null);
+				}
+				else {
+					parent.setLeft(null);
+				}
+			}
+		}
+		// Single node present check
+		else if (root.getLeft() == null && root.getRight() != null) {
+			if (parent.getRight() == root) {
+				parent.setRight(root.getRight());
+			}
+			else {
+				parent.setLeft(root.getRight());
+			}
+		} 
+		else if (root.getRight() == null && root.getLeft() != null) {
+			if (parent.getRight() == root) {
+				parent.setRight(root.getLeft());
+			}
+			else {
+				parent.setLeft(root.getLeft());
+			}
+		}
+		// When both left and right nodes are present
+		else {
+			TreeNode<Integer> maxDataNode = findMax(root.getLeft());
+			int dataToSet = maxDataNode.getData();
+			// TODO: This may be optimized as we are deleting the largest node recursively from the root again (But not the actual root).
+			deleteElementFromBST(root, maxDataNode.getData());
+			root.setData(dataToSet);
+		}
+	}
+	
+	/**
+	 * Find the least common ancestor of two given nodes in a binary search tree.
+	 * @param root: Root node
+	 * @param node1: Node1
+	 * @param node2: Node2
+	 * @return: Least common ancestor of node1 and node2
+	 * @algo:
+	 * 	<p>
+	 * 		Start traversing from the root.
+	 * 		If the root data is greater than both the nodes data, then the LCA is in the left subtree.
+	 * 		If the root data is less than both the nodes data, then the LCA is in the right subtree.
+	 * 		Otherwise, the root itself is the LCA
+	 * 	</p>
+	 */
+	public TreeNode<Integer> findLCAOfBST(TreeNode<Integer> root, Integer node1, Integer node2) {
+		if(root == null) {
+			return null;
+		}
+		
+		if(node1 > root.getData() && node2 > root.getData()) { // LCA lies to the right
+			return findLCAOfBST(root.getRight(), node1, node2);
+		}
+
+		if(node1 < root.getData() && node2 < root.getData()) { // LCA lies to the right
+			return findLCAOfBST(root.getLeft(), node1, node2);
+		}
+		
+		return root;
+	}
+	
+	public int findMax1(TreeNode<Integer> root) {
+		return 100;
+	}
+
+	/**
+	 *  Check if a binary tree is a binary search tree or not.
+	 * @param root: Root node
+	 * @return: True if the tree is a binary search tree else false.
+	 */
+	public boolean isBinarySearchTree(TreeNode<Integer> root) {
+		if(root == null) {
+			return true;
+		}
+		
+		// If any of the nodes in the left subtree is greater than the root node data, return false
+		if( root.getLeft() != null && root.getData() < findMax(root.getLeft()).getData()) {
+			return false;
+		}
+		
+		// If any of the nodes in the right subtree is less than the root node data, return false
+		if( root.getRight() != null && (root.getData() > findMin(root.getRight()).getData()) ) {
+			return false;
+		}
+		
+		// Check recursively for left and right subtree
+		if( !isBinarySearchTree(root.getLeft()) || !isBinarySearchTree(root.getRight()) ) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public static void main(String[] args) {
 		BinarySearchTreeQuestions ob = new BinarySearchTreeQuestions();
 //		TreeNode<Integer> bSTree = ob.createBST();
@@ -223,27 +362,37 @@ public class BinarySearchTreeQuestions {
 		bst.addData(12);
 		bst.addData(10);
 		bst.addData(14);
-		bst.addData(28);
-		bst.addData(24);
+//		bst.addData(28);
+//		bst.addData(24);
 		
 //		TreeTraversal.inOrderTraversal(bst.getRootNode());
-		TreeNode<Integer> successor = ob.findImmediateInOrderSuccessorBST(bst.getRootNode(), 20);
-		if(successor != null) {
-			System.out.println("Found the successor");
-			System.out.println(successor.getData());
-		}
-		else {
-			System.out.println("Couldn't find the successor");
-		}
+//		TreeNode<Integer> successor = ob.findImmediateInOrderSuccessorBST(bst.getRootNode(), 20);
+//		if(successor != null) {
+//			System.out.println("Found the successor");
+//			System.out.println(successor.getData());
+//		}
+//		else {
+//			System.out.println("Couldn't find the successor");
+//		}
+//		
+//		TreeNode<Integer> predecessor = ob.findImmediateInOrderPredecessorBST(bst.getRootNode(), 20);
+//		if(predecessor != null) {
+//			System.out.println("Found the successor");
+//			System.out.println(predecessor.getData());
+//		}
+//		else {
+//			System.out.println("Couldn't find the predecessor");
+//		}
 		
-		TreeNode<Integer> predecessor = ob.findImmediateInOrderPredecessorBST(bst.getRootNode(), 20);
-		if(predecessor != null) {
-			System.out.println("Found the successor");
-			System.out.println(predecessor.getData());
-		}
-		else {
-			System.out.println("Couldn't find the predecessor");
-		}
+//		System.out.println("Before Deletion");
+//		TreeTraversal.inOrderTraversal(bst.getRootNode());
+//		ob.deleteElementFromBST(bst.getRootNode(), 22);
+//		System.out.println("After Deletion");
+//		TreeTraversal.inOrderTraversal(bst.getRootNode());
+	
+		System.out.println(ob.findLCAOfBST(bst.getRootNode(), 10, 14).getData());
+		System.out.println(ob.findLCAOfBST(bst.getRootNode(), 14, 8).getData());
+		System.out.println(ob.findLCAOfBST(bst.getRootNode(), 10, 22).getData());
 	}
 	
 }

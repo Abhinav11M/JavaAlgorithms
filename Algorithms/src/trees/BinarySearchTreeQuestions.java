@@ -335,6 +335,61 @@ public class BinarySearchTreeQuestions {
 		return true;
 	}
 	
+	/**
+	 * Create a circular doubly linked list from a BST
+	 * @param root: Root node of the tree.
+	 * @algo: 
+	 * 		<p>
+	 * 			Create left and right circular linked lists recursively.
+	 * 			Join the left and root and then join the resultant with right.
+	 * 		</p>
+	 */
+	public TreeNode<Integer> createCDLLFromBST(TreeNode<Integer> root) {
+		if(root == null) {
+			return null;
+		}
+		
+		TreeNode<Integer> left = createCDLLFromBST(root.getLeft());
+		TreeNode<Integer> right = createCDLLFromBST(root.getRight());
+	
+		// Create a circular linked list for root
+		root.setLeft(root);
+		root.setRight(root);
+		
+		return mergeCDLLS(mergeCDLLS(left, root), right);
+	}
+	
+	private TreeNode<Integer> mergeCDLLS(TreeNode<Integer> left, TreeNode<Integer> right) {
+		if(left == null) {
+			return right;
+		}
+		if(right == null) {
+			return left;
+		}
+		
+		TreeNode<Integer> leftLast = left.getLeft();
+		TreeNode<Integer> rightLast = right.getLeft();
+		
+		leftLast.setRight(right);
+		right.setLeft(leftLast);
+
+		left.setLeft(rightLast);
+		rightLast.setRight(left);
+		
+		return left;
+	}
+
+	private TreeNode<Integer> createBinaryTree() {
+		TreeNode<Integer> root = new TreeNode<Integer>(10);
+		root.setLeft(new TreeNode<Integer>(12));
+		root.setRight(new TreeNode<Integer>(15));
+		root.getLeft().setLeft(new TreeNode<Integer>(25));
+		root.getLeft().setRight(new TreeNode<Integer>(30));
+		root.getRight().setLeft(new TreeNode<Integer>(36));
+		root.getRight().setRight(new TreeNode<Integer>(44));
+		return root;
+	}
+
 	public static void main(String[] args) {
 		BinarySearchTreeQuestions ob = new BinarySearchTreeQuestions();
 //		TreeNode<Integer> bSTree = ob.createBST();
@@ -390,9 +445,20 @@ public class BinarySearchTreeQuestions {
 //		System.out.println("After Deletion");
 //		TreeTraversal.inOrderTraversal(bst.getRootNode());
 	
-		System.out.println(ob.findLCAOfBST(bst.getRootNode(), 10, 14).getData());
-		System.out.println(ob.findLCAOfBST(bst.getRootNode(), 14, 8).getData());
-		System.out.println(ob.findLCAOfBST(bst.getRootNode(), 10, 22).getData());
+//		System.out.println(ob.findLCAOfBST(bst.getRootNode(), 10, 14).getData());
+//		System.out.println(ob.findLCAOfBST(bst.getRootNode(), 14, 8).getData());
+//		System.out.println(ob.findLCAOfBST(bst.getRootNode(), 10, 22).getData());
+		
+		TreeNode<Integer> root = ob.createBinaryTree();
+//		TreeNode<Integer> t = null;
+		TreeNode<Integer> dll = ob.createCDLLFromBST(root);
+		TreeNode<Integer> temp = dll;
+		while(temp.getRight() != dll) {
+			System.out.println(temp.getData());
+			temp = temp.getRight();
+		}
+		System.out.println(temp.getData());
+		
 	}
 	
 }

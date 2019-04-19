@@ -8,6 +8,12 @@ public class TreeNode<T>
 		this.right = null;
 	}
 	
+	public TreeNode(TreeNode<T> node) {
+		this.data = node.data;
+		this.left = node.left;
+		this.right = node.right;
+	}
+	
 	public T getData()
 	{
 		return data;
@@ -31,6 +37,11 @@ public class TreeNode<T>
 	public void setRight(TreeNode<T> right)
 	{
 		this.right = right;
+	}
+
+	@Override
+	public String toString() {
+		return "TreeNode [data=" + data + ", left=" + left + ", right=" + right + "]";
 	}
 
 	private T data;

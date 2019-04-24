@@ -1,13 +1,13 @@
 package linkedlists;
 
-public class Node {
+public class Node<T> {
 	public Node()
 	{}
-	public Node(int d) 
+	public Node(T d) 
 	{
-		data =d;
+		data = d;
 		next = null;
 	}
-	public int data;
-	public Node next;
+	public T data;
+	public Node<T> next;
 }

@@ -182,6 +182,77 @@ public class TreeTraversal
 		}
 	}
 	
+	// ==== Morris algorithms for non-recursive tree traversal ====
+	/**
+	 * Algo:
+	 * <p>
+	 * 	Keep traversing until the root becomes null. 
+	 * 	We need to get back to root, after traversing the left subtree.
+	 * 	If the the left subtree does not exist, traverse the root node and then the right subtree.
+	 * 	Else, find the Inorder predecessor of the node and connect the inorder predecessor's node->right to current node.
+	 * 	If while finding the inorder predecessor, we find the node itself, it means that the link has already been created 
+	 * 	and needs to be removed
+	 * 	<a>https://www.youtube.com/watch?v=wGXB9OWhPTg</a>
+	 * @param bTree
+	 */
+	public static<T> void morrisInOrderTraversal(TreeNode<T> bTree ) {
+		while(bTree != null) {
+			if(bTree.getLeft() != null) {
+				TreeNode<T> inOrderPredecessor = getInOrderPredecessor(bTree);
+				if(inOrderPredecessor.getRight() != null) { // Since we created this link, now should be removed.
+					inOrderPredecessor.setRight(null);
+					System.out.println(bTree.getData());
+					bTree = bTree.getRight(); // move to right subtree.
+				}
+				else { // No link, create the link to come back
+					inOrderPredecessor.setRight(bTree);
+					bTree = bTree.getLeft();
+				}
+			}
+			else { // No left subtree, just traverse the root and then move to the right subtree.
+				System.out.println(bTree.getData());
+				bTree = bTree.getRight();
+			}
+			
+		}
+	}
+
+	public static<T> void morrisPreOrderTraversal(TreeNode<T> bTree ) {
+		while(bTree != null) {
+			// Visit the root
+			// If left subtree is not present, move to the right subtree
+			if(bTree.getLeft() == null) {
+				System.out.println(bTree.getData());
+				bTree = bTree.getRight();
+			}
+			else {
+				// Find the InOrder Predecessor
+				TreeNode<T> inOrderPredecessor = getInOrderPredecessor(bTree);
+				if(inOrderPredecessor.getRight() == bTree ) {
+					// Link is already created and traversed. Delete the link and move to the right.
+					inOrderPredecessor.setRight(null);
+					bTree = bTree.getRight();
+				}
+				else { // Link is not created. Create the link from predecessor to the node
+					System.out.println(bTree.getData());
+					inOrderPredecessor.setRight(bTree);
+					bTree = bTree.getLeft();
+				}
+			}
+		}
+	}
+	
+	private static<T> TreeNode<T> getInOrderPredecessor(TreeNode<T> bTree) {
+		TreeNode<T> predecessor = bTree.getLeft();
+		while(predecessor.getRight() != null) {
+			if(predecessor.getRight() == bTree) {
+				return predecessor;
+			}
+			predecessor = predecessor.getRight();
+		}
+
+		return predecessor;
+	}
 }
 
 class TestTraversal
@@ -202,7 +273,9 @@ class TestTraversal
 //		TreeTraversal.postOrderTraversal(bTree);
 //		System.out.println("Non-Recursive Post-Order Traversal");
 //		TreeTraversal.postOrderTraversalNonRecursive(bTree);
-		TreeTraversal.levelOrderTraversal(bTree);
+//		TreeTraversal.levelOrderTraversal(bTree);
+//		TreeTraversal.morrisInOrderTraversal(bTree);
+		TreeTraversal.morrisPreOrderTraversal(bTree);
 	}
 
 	private static TreeNode<Integer> createTree()

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import linkedlists.DoublyLinkedList;
+import linkedlists.Node;
+import linkedlists.SinglyLinkedList;
 import trees.binarytrees.TreeTraversal;
 
 public class BinarySearchTreeQuestions {
@@ -389,7 +392,150 @@ public class BinarySearchTreeQuestions {
 		root.getRight().setRight(new TreeNode<Integer>(44));
 		return root;
 	}
+	
+	private DoublyLinkedList<Integer> createSortedLinkedList() {
+		DoublyLinkedList<Integer> dList = new DoublyLinkedList<Integer>(1);
+		dList.addElement(2);
+		dList.addElement(3);
+		dList.addElement(4);
+		dList.addElement(5);
+		dList.addElement(6);
+		dList.addElement(7);
+		return dList;
+	}
 
+	/**
+	 * Take a doubly linked list and create a balanced binary search tree.
+	 * @param dll: Head of the doubly linked list.
+	 * @return: head of the balanced binary search tree.
+	 */
+	public TreeNode<Integer> createBalBTreeFromDLL(DoublyLinkedList<Integer> dll) {
+		// Number of nodes should be (2^n - 1)
+		if(! isBalBTreeContructible(dll.countElement()) ) {
+			return null;
+		}
+		
+		return createBalBTreeFromDLL(dll.getHead());
+	}
+
+	private TreeNode<Integer> createBalBTreeFromDLL(TreeNode<Integer> head) {
+		if(head.getRight() == null) { // Only one node is available i.e root node
+			return head;
+		}
+		
+		// Find the middle
+		TreeNode<Integer> middleNode = getMiddleNode(head);
+		TreeNode<Integer> left = head;
+		TreeNode<Integer> right = middleNode.getRight();
+		middleNode.getLeft().setRight(null);
+		middleNode.setLeft(null);
+		middleNode.getRight().setLeft(null);
+		middleNode.setRight(null);
+		middleNode.setLeft(createBalBTreeFromDLL(left));
+		middleNode.setRight(createBalBTreeFromDLL(right));
+		return middleNode;
+	}
+
+	private TreeNode<Integer> getMiddleNode(TreeNode<Integer> head) {
+		if(head == null) {
+			return null;
+		}
+
+		TreeNode<Integer> endNode = head;
+		int counter = 1;
+
+		while(endNode.getRight() != null) {
+			++counter;
+			endNode = endNode.getRight();
+		}
+		
+		if(counter%2 != 1) {
+			throw new RuntimeException("Cannot find the middle of a linked list with even number of nodes : " + counter);
+		}
+		
+		while(head != endNode) {
+			head = head.getRight();
+			endNode = endNode.getLeft();
+		}
+		
+		return endNode;
+	}
+
+	/**
+	 * Check if count is 2^n -1 or not
+	 * @param countElement
+	 * @return
+	 */
+	private boolean isBalBTreeContructible(int count) {
+		if(count == 1) { //Only root node
+			return true;
+		}
+		
+		++count;
+		while(count%2 == 0) {
+			count /= 2;
+		}
+		
+		if(count == 1) {
+			return true;
+		}
+		
+		return false;
+	}
+
+	/**
+	 * Return the inorder predecessor. If the right node of a node is the root node itself, then return that node itself.
+	 * @param bTree
+	 * @return
+	 */
+	private TreeNode<Integer> getInOrderPredecessor(TreeNode<Integer> bTree) {
+		TreeNode<Integer> inOrderPredecessor = bTree.getLeft();
+
+		while(inOrderPredecessor.getRight() != null && inOrderPredecessor.getRight() != bTree) {
+			inOrderPredecessor = inOrderPredecessor.getRight();
+		}
+
+		return inOrderPredecessor;
+	}	
+	/**
+	 * Use Morris InOrder traversal and keep a count of the nodes.
+	 * @param bTree
+	 * @param k
+	 * @return
+	 */
+	public TreeNode<Integer> getKthSmallestElement(TreeNode<Integer> bTree, int k) {
+		if(bTree == null) {
+			return null;
+		}
+		int count = 0;
+		TreeNode<Integer> nodeToReturn = bTree;
+		while(bTree != null) {
+			if(count == k) {
+				break;
+			}
+
+			if(bTree.getLeft() == null) {
+				nodeToReturn = bTree;
+				++count;
+				bTree = bTree.getRight();
+			}
+			else {
+				TreeNode<Integer> inOrderPredecessor = getInOrderPredecessor(bTree);
+				if(inOrderPredecessor.getRight() == bTree) { // Link is already created. Break this link.
+					nodeToReturn = bTree;
+					++count;
+					inOrderPredecessor.setRight(null);					
+					bTree = bTree.getRight();
+				}
+				else { // Create the link from the inOrderPredecessor to the node.
+					inOrderPredecessor.setRight(bTree);
+					bTree = bTree.getLeft();
+				}
+			}
+		}
+		return nodeToReturn;
+	}
+	
 	public static void main(String[] args) {
 		BinarySearchTreeQuestions ob = new BinarySearchTreeQuestions();
 //		TreeNode<Integer> bSTree = ob.createBST();
@@ -449,7 +595,8 @@ public class BinarySearchTreeQuestions {
 //		System.out.println(ob.findLCAOfBST(bst.getRootNode(), 14, 8).getData());
 //		System.out.println(ob.findLCAOfBST(bst.getRootNode(), 10, 22).getData());
 		
-		TreeNode<Integer> root = ob.createBinaryTree();
+		// ====== Create Doubly Circular linked list from tree Begins =======
+		/*TreeNode<Integer> root = ob.createBinaryTree();
 //		TreeNode<Integer> t = null;
 		TreeNode<Integer> dll = ob.createCDLLFromBST(root);
 		TreeNode<Integer> temp = dll;
@@ -457,8 +604,21 @@ public class BinarySearchTreeQuestions {
 			System.out.println(temp.getData());
 			temp = temp.getRight();
 		}
-		System.out.println(temp.getData());
+		System.out.println(temp.getData());*/
+		// ====== Create Doubly Circular linked list from tree Ends =======
 		
+		// ===== Create balanced BST from doubly linked list Begins ========
+		/*DoublyLinkedList<Integer> dll = ob.createSortedLinkedList();
+		TreeNode<Integer> balBTree = ob.createBalBTreeFromDLL(dll);
+		TreeTraversal.inOrderTraversal(balBTree);*/
+		// ===== Create balanced BST from doubly linked list Ends ========
+		// ===== Find the K-th smallest element of a binary tree ======
+		
+//		TreeTraversal.inOrderTraversal(bst.getRootNode());
+		
+		TreeNode<Integer> node = ob.getKthSmallestElement(bst.getRootNode(), 3);
+		System.out.println(node.getData());
+		
+		// ===== Find the K-th smallest element of a binary tree ======
 	}
-	
 }

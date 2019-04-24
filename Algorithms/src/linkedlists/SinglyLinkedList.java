@@ -1,48 +1,48 @@
 package linkedlists;
 
-public class SinglyLinkedList {
+public class SinglyLinkedList<T> {
 
-	public void addNode(int nodeData) {
+	public void addNode(T nodeData) {
 		if(head == null) {
-			head = new Node();
+			head = new Node<>();
 			head.data = nodeData;
 			head.next = null;
 		}
 		else {
 			// Traverse to the end of the list and add the node.
-			Node nextNode = head;
+			Node<T> nextNode = head;
 			while(nextNode.next != null) {
 				nextNode = nextNode.next;
 			}
 			// Add a node to the end.
-			nextNode.next = new Node();
+			nextNode.next = new Node<>();
 			nextNode.next.data = nodeData;
 			nextNode.next.next = null;
 		}
 	}
 	
-	public void addAtBeg(int nodeData) {
+	public void addAtBeg(T nodeData) {
 		if(head == null) {
 			// Simply add a new node.
-			head = new Node();
+			head = new Node<>();
 			head.next = null;
 			head.data = nodeData;
 		}
 		else {
 			// Update the head to point to the first node.
-			Node newHead = new Node();
+			Node<T> newHead = new Node<>();
 			newHead.data = nodeData;
 			newHead.next = head;
 			this.head = newHead;
 		}
 	}
 	
-	public void addAtPos(int pos, int nodeData) {
+	public void addAtPos(int pos, T nodeData) {
 		if(pos == 0) {
 			addAtBeg(nodeData);
 		}
 		else {
-			Node travNode = head;
+			Node<T> travNode = head;
 			for(int i = 0; i < pos; ++i) {
 				if(travNode != null) {
 					travNode = travNode.next;
@@ -52,7 +52,7 @@ public class SinglyLinkedList {
 					return;
 				}
 			}
-			Node newNode = new Node();
+			Node<T> newNode = new Node<>();
 			newNode.data = nodeData;
 			//Link the new node.
 			newNode.next = travNode.next;
@@ -73,8 +73,8 @@ public class SinglyLinkedList {
 			deleteFromBeg();
 		}
 		else {
-			Node prevNode = head;
-			Node nextNode = head.next;
+			Node<T> prevNode = head;
+			Node<T> nextNode = head.next;
 			for (int i = 0; i < pos; ++i) {
 				if(nextNode != null) {
 					prevNode = nextNode;
@@ -91,14 +91,14 @@ public class SinglyLinkedList {
 	}
 	
 	public void traverse() {
-		Node travNode = head;
+		Node<T> travNode = head;
 		while(travNode != null) {
 			System.out.println(travNode.data);
 			travNode = travNode.next;
 		}
 	}
 	
-	public int countNodes(Node list) {
+	public int countNodes(Node<T> list) {
 		int count = 0;
 		while(list != null) {
 			++count;
@@ -107,13 +107,17 @@ public class SinglyLinkedList {
 		return count;
 	}
 	
+	public int countNodes() {
+		return countNodes(head);
+	}
+	
 	// Find the nth node from the end of a linked list (Using recursion)
 	public void getNthNodeFromEnd(int n) {
 		if(head == null) {
 			System.out.println("List is empty...");
 			return;
 		}
-		Node tempHead = head;
+		Node<T> tempHead = head;
 		while(tempHead != null) {
 			if(countNodes(tempHead.next) < n-1) {
 				System.out.println("List has less number of nodes...");
@@ -133,8 +137,9 @@ public class SinglyLinkedList {
 			System.out.println("The list is empty");
 			return;
 		}
-		Node tempHead = head;
-		Node posHead = head;
+		
+		Node<T> tempHead = head;
+		Node<T> posHead = head;
 		// Move the tempHead to the nth position from the beginning
 		for(int i = 0; i < n-1; ++i) {
 			if(tempHead == null) {
@@ -150,13 +155,13 @@ public class SinglyLinkedList {
 		}
 	}
 	
-	public Node head = null;
+	public Node<T> head = null;
 }
 
 class MainClass {	
 	
-	public void travFromLast(Node head) {
-		Node tempHead = head; //Keeping the head unaltered.
+	public void travFromLast(Node<Integer> head) {
+		Node<Integer> tempHead = head; //Keeping the head unaltered.
 		if(tempHead == null) {
 			return;
 		}
@@ -164,8 +169,8 @@ class MainClass {
 		System.out.println(tempHead.data);
 	}
 	
-	public void trav(Node head) {
-		Node tempHead = head;
+	public void trav(Node<Integer> head) {
+		Node<Integer> tempHead = head;
 		while(tempHead != null) {
 			System.out.print(tempHead.data + ", ");
 			tempHead = tempHead.next;
@@ -174,7 +179,7 @@ class MainClass {
 	}
 	
 	// Reverse a linked list (Using recursion)
-	public Node reverse(Node head)
+	public Node<Integer> reverse(Node<Integer> head)
 	{
 		if(head == null) {
 			return null;
@@ -183,22 +188,22 @@ class MainClass {
 		if(head.next == null) {
 			return head;
 		}
-		Node firstElement = head;
-		Node secondElement = head.next;
+		Node<Integer> firstElement = head;
+		Node<Integer> secondElement = head.next;
 		// Detach the first element from the rest of the list as it may create cycle while reversing.
 		firstElement.next = null;
-		Node remainingList = reverse(secondElement);
+		Node<Integer> remainingList = reverse(secondElement);
 		//Link the first node at the last of the reversed node.
 		secondElement.next = firstElement;
 		return remainingList;
 	}
 	
 	// Reverse a linked list (Without recursion)
-	public Node reverseOpt(Node head) {
-		Node tempHead = head;
-		Node finalList = null;
+	public Node<Integer> reverseOpt(Node<Integer> head) {
+		Node<Integer> tempHead = head;
+		Node<Integer> finalList = null;
 		while (tempHead != null) {
-			Node newNode = tempHead;
+			Node<Integer> newNode = tempHead;
 			tempHead = tempHead.next;
 			if(finalList == null) {
 				//Adding the first node.
@@ -215,19 +220,19 @@ class MainClass {
 	}
 	
 	public static void main(String[] args) {
-		SinglyLinkedList list = createLinkedList();
+		SinglyLinkedList<Integer> list = createLinkedList();
 		MainClass m = new MainClass();
 		m.trav(list.head);
 		//Node revList = m.reverse(list.head);
-		Node revList = m.reverseOpt(list.head);
+		Node<Integer> revList = m.reverseOpt(list.head);
 		System.out.println("\nReversed List : ");
 		m.trav(revList);
 		m.travFromLast(revList);
 
 	}
 
-	private static SinglyLinkedList createLinkedList() {
-		SinglyLinkedList ll = new SinglyLinkedList();
+	private static SinglyLinkedList<Integer> createLinkedList() {
+		SinglyLinkedList<Integer> ll = new SinglyLinkedList<>();
 		for (int i = 1; i <= 10; ++i) {
 			ll.addNode(i);
 		}

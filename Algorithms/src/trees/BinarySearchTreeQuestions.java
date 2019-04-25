@@ -1,8 +1,12 @@
 package trees;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+
+import org.omg.CORBA.INTERNAL;
 
 import linkedlists.DoublyLinkedList;
 import linkedlists.Node;
@@ -536,6 +540,59 @@ public class BinarySearchTreeQuestions {
 		return nodeToReturn;
 	}
 	
+	
+	/**
+	 * Find the floor node in a BST.
+	 * @param root : Root node of the tree
+	 * @param num : Number for which floor need to be found
+	 * @return : Floor node
+	 * <p> 
+	 * 	If the root node is equal to num, root node itself is the floor.
+	 * 	If num is less that root node, it means that floor will always be in the left subtree (Since floor has to be less than or equal to num).
+	 * 	So recursively search in the left subtree.
+	 * 	If num is greater that root, then there are two possibilities now, either the root node or the right subtree.
+	 * 	So we need to pick the closer one. The closer one will be one with the higher value. (The right subtree will also give a floor value and the other 
+	 * 	floor is the root.) Both are less than num, but the number with higher value will be closer to num. So we pick the higher value.
+	 * </p>
+	 */
+	public int getFloorOfBST(TreeNode<Integer> root, int num) {
+		if(root == null) {
+			return Integer.MAX_VALUE;
+		}
+		
+		if(root.getData() == num) {
+			return root.getData();
+		}
+		
+		if(num < root.getData()) {
+			return getFloorOfBST(root.getLeft(), num);
+		}
+		
+		else {
+			int rightFloor = getFloorOfBST(root.getRight(), num);
+			return num > rightFloor ? rightFloor : root.getData();
+		}
+		
+	} 
+	
+	public int getCeilOfBST(TreeNode<Integer> root, int num) {
+		if(root == null) {
+			return Integer.MIN_VALUE;
+		}
+
+		if(root.getData() == num) {
+			return root.getData();
+		}
+		
+		if(num < root.getData()) { // Ceil will be between the root and the left subtree
+			int leftCeil = getCeilOfBST(root.getLeft(), num);
+			return num < leftCeil ? leftCeil : root.getData();
+		}
+		else {
+			return getCeilOfBST(root.getRight(), num);
+		}
+	}
+	
 	public static void main(String[] args) {
 		BinarySearchTreeQuestions ob = new BinarySearchTreeQuestions();
 //		TreeNode<Integer> bSTree = ob.createBST();
@@ -563,8 +620,8 @@ public class BinarySearchTreeQuestions {
 		bst.addData(12);
 		bst.addData(10);
 		bst.addData(14);
-//		bst.addData(28);
-//		bst.addData(24);
+		bst.addData(28);
+		bst.addData(24);
 		
 //		TreeTraversal.inOrderTraversal(bst.getRootNode());
 //		TreeNode<Integer> successor = ob.findImmediateInOrderSuccessorBST(bst.getRootNode(), 20);
@@ -612,13 +669,15 @@ public class BinarySearchTreeQuestions {
 		TreeNode<Integer> balBTree = ob.createBalBTreeFromDLL(dll);
 		TreeTraversal.inOrderTraversal(balBTree);*/
 		// ===== Create balanced BST from doubly linked list Ends ========
+
+		// ===== Find the K-th smallest element of a binary tree ======
+//		TreeNode<Integer> node = ob.getKthSmallestElement(bst.getRootNode(), 3);
+//		System.out.println(node.getData());
 		// ===== Find the K-th smallest element of a binary tree ======
 		
-//		TreeTraversal.inOrderTraversal(bst.getRootNode());
-		
-		TreeNode<Integer> node = ob.getKthSmallestElement(bst.getRootNode(), 3);
-		System.out.println(node.getData());
-		
-		// ===== Find the K-th smallest element of a binary tree ======
+		// ==== Find the floor in a BST ==== 
+		System.out.println(ob.getFloorOfBST(bst.getRootNode(), 5));
+		System.out.println(ob.getCeilOfBST(bst.getRootNode(), 5));
+		// ==== Find the floor in a BST ==== 
 	}
 }

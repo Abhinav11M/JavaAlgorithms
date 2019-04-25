@@ -1,13 +1,14 @@
 package trees;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
-import javafx.util.Pair;
+
+import org.apache.commons.lang3.Pair;
+
 import trees.binarytrees.TreeTraversal;
 
 public class TreeQuestions
@@ -535,12 +536,12 @@ public class TreeQuestions
 			return new Pair<Boolean, Pair<Integer, int[]>>(true, childPair);
 		}
 		Pair<Boolean, Pair<Integer, int[]>> lResult = hasPathSum(bTree.getLeft(), sumOfNodes, path, pathIndex);
-		if(lResult.getKey() == true) {
+		if(lResult.left == true) {
 			return lResult;
 		}
 		
 		Pair<Boolean, Pair<Integer, int[]>> rResult = hasPathSum(bTree.getRight(), sumOfNodes, path, pathIndex);
-		if(rResult.getKey() == true) {
+		if(rResult.left == true) {
 			return rResult;
 		}
 		return new Pair<Boolean, Pair<Integer, int[]>>(false, null);

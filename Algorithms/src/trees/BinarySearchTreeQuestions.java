@@ -593,6 +593,29 @@ public class BinarySearchTreeQuestions {
 		}
 	}
 	
+	
+	/**
+	 * Print all the numbers between K1 and K2 in a BST
+	 * @param args
+	 */
+	public void bstRangePrinter(TreeNode<Integer> root, int k1, int k2) {
+		if(root == null) { 
+			return;
+		}
+		
+		if(root.getData() > k1) { // If root->data is greater than k1, print the nodes in the left subtree.
+			bstRangePrinter(root.getLeft(), k1, k2);
+		}
+
+		if(root.getData() >= k1 && root.getData() <= k2) {
+			System.out.println(root.getData());
+		}
+
+		if(root.getData() < k2) { // If K2 is greater than root->data, cover the nodes in the right subtree.
+			bstRangePrinter(root.getRight(), k1, k2);
+		}
+	}
+	
 	public static void main(String[] args) {
 		BinarySearchTreeQuestions ob = new BinarySearchTreeQuestions();
 //		TreeNode<Integer> bSTree = ob.createBST();
@@ -676,8 +699,12 @@ public class BinarySearchTreeQuestions {
 		// ===== Find the K-th smallest element of a binary tree ======
 		
 		// ==== Find the floor in a BST ==== 
-		System.out.println(ob.getFloorOfBST(bst.getRootNode(), 5));
-		System.out.println(ob.getCeilOfBST(bst.getRootNode(), 5));
+//		System.out.println(ob.getFloorOfBST(bst.getRootNode(), 5));
+//		System.out.println(ob.getCeilOfBST(bst.getRootNode(), 5));
 		// ==== Find the floor in a BST ==== 
+		
+		// ==== Print all the numbers in range k1 and k2 ====
+		ob.bstRangePrinter(bst.getRootNode(), 8, 27);
+		// ==== Print all the numbers in range k1 and k2 ====
 	}
 }

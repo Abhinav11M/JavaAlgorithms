@@ -10,10 +10,26 @@ public class AVLTreeQuestions {
 */		// ====== Testing RR Rotation ======
 		
 		// ====== Testing LL Rotation ======
-		AVLTree head = new AVLTree();
+/*		AVLTree head = new AVLTree();
 		head.insertNode(10);
 		head.insertNode(5);
 		head.insertNode(3);
-		// ====== Testing LL Rotation ======
+*/		// ====== Testing LL Rotation ======
+		
+		// ====== Testing LR Rotation ======
+/*		AVLTree head = new AVLTree();
+		head.insertNode(10);
+		head.insertNode(5);
+		head.insertNode(8);
+*/		// ====== Testing LR Rotation ======
+
+		// ====== Testing RR Rotation ======
+		AVLTree head = new AVLTree();
+		head.insertNode(10);
+		head.insertNode(15);
+		head.insertNode(18);
+		// ====== Testing RR Rotation ======
+		
+		
 	}
 }

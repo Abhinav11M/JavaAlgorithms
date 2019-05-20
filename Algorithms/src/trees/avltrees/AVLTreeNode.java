@@ -9,7 +9,7 @@ public class AVLTreeNode {
 		height = 0; // Assuming the height of a leaf node is 0.
 		balanceFactor = 0;
 	}
-	
+
 	public void setData(int data) {
 		this.data = data;
 	}
@@ -48,6 +48,11 @@ public class AVLTreeNode {
 	
 	public void setBalanceFactor(int balanceFactor) {
 		this.balanceFactor = balanceFactor;
+	}
+	
+	@Override
+	public String toString() {
+		return "AVLTreeNode [data=" + data + ", height=" + height + ", balanceFactor=" + balanceFactor + "]";
 	}
 
 	private int data;

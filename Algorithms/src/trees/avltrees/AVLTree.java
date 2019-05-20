@@ -58,54 +58,41 @@ public class AVLTree {
 	 * @param data: Data of the node to be deleted. If the node is not found, just skip deleting.
 	 */
 	public void deleteNode(int data) {
-		deleteNode(data, head, head);
+		deleteNode(data, head);
 	}
 	
-	private void deleteNode(int data, AVLTreeNode head, AVLTreeNode parent) {
+	private AVLTreeNode deleteNode(int data, AVLTreeNode head) {
+		if(head == null) {
+			return null;
+		}
+
 		if(data < head.getData()) {
-			deleteNode(data, head.getLeft(), head);
+			head.setLeft(deleteNode(data, head.getLeft()));
 		}
 
 		else if(data > head.getData()) {
-			deleteNode(data, head.getRight(), head);
+			head.setRight(deleteNode(data, head.getRight()));
 		}
 
 		else {
-			deleteNode(head, parent);
-		}
-	}
-	
-	private void deleteNode(AVLTreeNode head, AVLTreeNode parent) {
-		if(head.getLeft() == null && head.getRight() == null) { // Leaf node
-			head = null;
-		}
-		else if(head.getLeft() != null && head.getRight() == null) {// Only left child node exists 
-			if(parent.getLeft() == head) {
-				parent.setLeft(head.getLeft());
+			if(head.getLeft() == null) { // left subtree is empty, so return the right subtree
+				return head.getRight();
 			}
-			else {
-				parent.setRight(head.getLeft());
+			if(head.getRight() == null) { // right subtree is empty, so return the left subtree
+				return head.getLeft();
 			}
-		}
-		else if(head.getLeft() == null && head.getRight() != null) {// Only right child node exists 
-			if(parent.getLeft() == head) {
-				parent.setLeft(head.getRight());
-			}
-			else {
-				parent.setRight(head.getRight());
+			else { // If both the subtrees exist, find the inorder predecessor and swap the contents
+				AVLTreeNode tempNode = head.getLeft();
+				while(tempNode.getRight() != null) {
+					tempNode = tempNode.getRight();
+				}
+				head.setData(tempNode.getData()); // Copy the contents of the inorder predecessor to the head.
+				head.setRight(deleteNode(data, head.getRight())); // Delete the inorder predecessor.
 			}
 		}
-		else { //both left and right child node exists.
-			// Find the inOrderPredecessor
-			AVLTreeNode tempHead = head;
-			tempHead = tempHead.getLeft();
-			while(tempHead.getRight() != null) {
-				tempHead = tempHead.getRight();
-			}
-			head.setData(tempHead.getData());
-			tempHead = null;
-		}
-
+		
+		updateHeight(head);
+		return balance(head);
 	}
 	
 	private AVLTreeNode rotateRR(AVLTreeNode head) {

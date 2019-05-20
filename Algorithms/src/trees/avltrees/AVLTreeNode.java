@@ -1,5 +1,7 @@
 package trees.avltrees;
 
+import trees.TreeNode;
+
 public class AVLTreeNode {
 	
 	public AVLTreeNode(int argData) {
@@ -48,6 +50,16 @@ public class AVLTreeNode {
 	
 	public void setBalanceFactor(int balanceFactor) {
 		this.balanceFactor = balanceFactor;
+	}
+	
+	public static void inOrderTraversal(AVLTreeNode bTree)
+	{
+		if (bTree != null)
+		{
+			inOrderTraversal(bTree.getLeft());
+			System.out.println(bTree.getData());
+			inOrderTraversal(bTree.getRight());
+		}
 	}
 	
 	@Override

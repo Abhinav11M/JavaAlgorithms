@@ -3,7 +3,9 @@ package trees;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 
 import org.omg.CORBA.INTERNAL;
@@ -616,6 +618,112 @@ public class BinarySearchTreeQuestions {
 		}
 	}
 	
+	// Problem 79 Trees
+	public void treeNodeWithInOrderPredecessor(TreeNode2 root) {
+		Queue<TreeNode2> queue = new LinkedList<>();
+		if(root == null) {
+			return;
+		}
+		
+		queue.add(root);
+		while(!queue.isEmpty()) {
+			TreeNode2 parent = queue.poll();
+			parent.data2 = getInOrderPredecessorTree2(root, parent);
+			if(parent.left != null) {
+				queue.add(parent.left);
+			}
+			if(parent.right != null) {
+				queue.add(parent.right);
+			}
+		}
+	}
+	
+	private int getInOrderPredecessor(TreeNode2 root, TreeNode2 parent, TreeNode2 node, Stack<TreeNode2> pathTraverersed) {
+		if(root == null) {
+			return -1;
+		}
+		
+		if(root == node) {
+			if(root.left != null) {
+				TreeNode2 retNode = root.left;
+				while(retNode.right != null) {
+					retNode = retNode.right;
+				}
+				return retNode.data1;
+			}
+			else {
+				if(parent.right == node) {
+					return parent.data1;
+				}
+				while(pathTraverersed.isEmpty()) {
+					TreeNode2 retNode = pathTraverersed.pop();
+					if(retNode.data1 < node.data1) {
+						return retNode.data1;
+					}
+				}
+				return -1;
+			}
+		}
+		else if(root.data1 > node.data1) {
+			pathTraverersed.push(root);
+			return getInOrderPredecessor(root.left, root, node, pathTraverersed);
+		}
+		else {
+			pathTraverersed.push(root);
+			return getInOrderPredecessor(root.right, root, node, pathTraverersed);
+		}
+	}
+	
+	private int getInOrderPredecessorTree2(TreeNode2 root, TreeNode2 node) {
+		if(node.left != null) {
+			TreeNode2 retNode = node.left;
+			while(retNode.right != null) {
+				retNode = retNode.right;
+			}
+			return retNode.data1;
+		}
+		else {
+			return getInOrderPredecessor(root, root, node, new Stack<TreeNode2>());
+		}
+	}
+
+	/**
+	 * Find the node which is closest to a given node
+	 * @param args
+	 */
+	public TreeNode<Integer> getClosestNode(TreeNode<Integer> root, int nodeToFind) {
+		if(root == null) {
+			return null;
+		}
+		
+		TreeNode<Integer> retNode = null;
+		int diff = 999;
+		
+		while(root != null) {
+//			if(Math.abs(root.getData() - nodeToFind) > diff) { // Since the difference is widening, it is closer to the previous node
+//				return retNode;
+//			}
+
+			if(root.getData() == nodeToFind) {
+				return root;
+			}
+			else if(root.getData() > nodeToFind) { // Search in left subtree
+				int newDiff = Math.abs(root.getData() - nodeToFind);
+				retNode = diff > newDiff ? root : retNode;
+				diff = diff > newDiff ? newDiff : diff;
+				root = root.getLeft();
+			}
+			else { // Search in right subtree
+				int newDiff = Math.abs(root.getData() - nodeToFind);
+				retNode = diff > newDiff ? root : retNode;
+				diff = diff > newDiff ? newDiff : diff;
+				root = root.getRight();
+			}
+		}
+		
+		return retNode;
+	}
+	
 	public static void main(String[] args) {
 		BinarySearchTreeQuestions ob = new BinarySearchTreeQuestions();
 //		TreeNode<Integer> bSTree = ob.createBST();
@@ -635,16 +743,16 @@ public class BinarySearchTreeQuestions {
 //		System.out.println(ob.findMin(bSTree).getData());
 //		System.out.println(ob.findMax(bSTree).getData());
 		
-		BinarySearchTree bst = new BinarySearchTree();
-		bst.addData(20);
-		bst.addData(8);
-		bst.addData(22);
-		bst.addData(4);
-		bst.addData(12);
-		bst.addData(10);
-		bst.addData(14);
-		bst.addData(28);
-		bst.addData(24);
+//		BinarySearchTree bst = new BinarySearchTree();
+//		bst.addData(20);
+//		bst.addData(8);
+//		bst.addData(22);
+//		bst.addData(4);
+//		bst.addData(12);
+//		bst.addData(10);
+//		bst.addData(14);
+//		bst.addData(28);
+//		bst.addData(24);
 		
 //		TreeTraversal.inOrderTraversal(bst.getRootNode());
 //		TreeNode<Integer> successor = ob.findImmediateInOrderSuccessorBST(bst.getRootNode(), 20);
@@ -704,7 +812,36 @@ public class BinarySearchTreeQuestions {
 		// ==== Find the floor in a BST ==== 
 		
 		// ==== Print all the numbers in range k1 and k2 ====
-		ob.bstRangePrinter(bst.getRootNode(), 8, 27);
+//		ob.bstRangePrinter(bst.getRootNode(), 8, 27);
 		// ==== Print all the numbers in range k1 and k2 ====
+		
+		// ================= ALGO 79 (Trees) =================================
+		
+//		TreeNode2 root = new TreeNode2(6,6);
+//		root.left = new TreeNode2(4,2);
+//		root.right = new TreeNode2(9,2);
+//		root.left.left = new TreeNode2(2,0);
+//		root.left.right = new TreeNode2(5,0);
+//		root.right.left = new TreeNode2(7,1);
+//		root.right.left.right = new TreeNode2(8,0);
+//		
+//		ob.treeNodeWithInOrderPredecessor(root);
+//		
+//		System.out.println();
+		
+		// ==================================================
+		
+		BinarySearchTree bst = new BinarySearchTree();
+		bst.addData(8);
+		bst.addData(5);
+		bst.addData(15);
+		bst.addData(19);
+		bst.addData(11);
+		bst.addData(9);
+		bst.addData(12);
+		
+		TreeNode<Integer> ret = ob.getClosestNode(bst.getRootNode(), 10);
+		System.out.println(ret.getData());
+		
 	}
 }

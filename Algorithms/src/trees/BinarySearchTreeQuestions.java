@@ -689,7 +689,6 @@ public class BinarySearchTreeQuestions {
 
 	/**
 	 * Find the node which is closest to a given node
-	 * @param args
 	 */
 	public TreeNode<Integer> getClosestNode(TreeNode<Integer> root, int nodeToFind) {
 		if(root == null) {
@@ -722,6 +721,51 @@ public class BinarySearchTreeQuestions {
 		}
 		
 		return retNode;
+	}
+	
+	/**
+	 * Remove the half nodes without touching the leaf nodes.
+	 */
+	
+	public TreeNode<Integer> removeHalfNodes(TreeNode<Integer> root) {
+		if(root == null) {
+			return null;
+		}
+		
+		root.setLeft(removeHalfNodes(root.getLeft()));
+		root.setRight(removeHalfNodes(root.getRight()));
+		
+		if(root.getLeft() == null && root.getRight() == null) { // Leaf node.
+			return root;
+		}
+		
+		if(root.getLeft() == null) {
+			return root.getRight();
+		}
+
+		if(root.getRight() == null) {
+			return root.getLeft();
+		}
+
+		return root; // Both the nodes are present
+	}
+	
+	/**
+	 *	Remove the leaf nodes from the tree
+	 */
+	public TreeNode<Integer> removeLeafNodes(TreeNode<Integer> root) {
+		if(root == null) {
+			return null;
+		}
+		
+		if(root.getLeft() == null && root.getRight() == null) { // Leaf node
+			return null;
+		}
+		
+		root.setLeft(removeLeafNodes(root.getLeft()));
+		root.setRight(removeLeafNodes(root.getRight()));
+		
+		return root;
 	}
 	
 	public static void main(String[] args) {
@@ -831,7 +875,8 @@ public class BinarySearchTreeQuestions {
 		
 		// ==================================================
 		
-		BinarySearchTree bst = new BinarySearchTree();
+		// ===================== Find the closest node to a node =============================
+	/*	BinarySearchTree bst = new BinarySearchTree();
 		bst.addData(8);
 		bst.addData(5);
 		bst.addData(15);
@@ -841,7 +886,34 @@ public class BinarySearchTreeQuestions {
 		bst.addData(12);
 		
 		TreeNode<Integer> ret = ob.getClosestNode(bst.getRootNode(), 10);
-		System.out.println(ret.getData());
+		System.out.println(ret.getData()); */
 		
+		// ==================================================
+		
+		// ====================== Remove the half nodes ============================
+		
+		/*BinarySearchTree bst = new BinarySearchTree();
+		bst.addData(10);
+		bst.addData(15);
+		bst.addData(12);
+		bst.addData(20);
+
+		TreeNode<Integer> newRoot = ob.removeHalfNodes(bst.getRootNode());
+		
+		TreeTraversal.inOrderTraversalNonRecursive(newRoot); */
+		// ==================================================
+
+		// ===================== Remove leaf nodes =============================
+		
+		BinarySearchTree bst = new BinarySearchTree();
+		bst.addData(20);	
+		bst.addData(10);	
+		bst.addData(30);	
+		bst.addData(35);	
+		
+		TreeNode<Integer> newRoot = ob.removeLeafNodes(bst.getRootNode());
+
+		TreeTraversal.inOrderTraversalNonRecursive(newRoot);
+		// ==================================================
 	}
 }

@@ -109,6 +109,7 @@ public class HeapQuestions {
 				return o1.data - o2.data;
 			}
 		}); // Min heap.
+
 		SinglyLinkedList<Integer> finalList = new SinglyLinkedList<>();
 		
 		for(int k = 0; k < sortedLists.size(); ++k) {
@@ -165,6 +166,7 @@ public class HeapQuestions {
 		System.out.println(minHeap.deleteMin());
 		System.out.println(minHeap.deleteMin());*/
 		
+		/*
 		minHeap.printElementsGreaterThan(3);
 		
 		Integer[] res = ques.mergeTwoHeaps(new MaxHeap(new int[] {4,2,1,9}), new MaxHeap(new int[] {6,12,3,19}));
@@ -206,5 +208,16 @@ public class HeapQuestions {
 		
 		SinglyLinkedList<Integer> res1 = ques.mergeKSortedLists(lists);
 		res1.traverse();
+		*/
+		
+		MinMaxHeap minMaxHeap = new MinMaxHeap(5);
+		minMaxHeap.add(4);
+		minMaxHeap.add(3);
+		minMaxHeap.add(5);
+		minMaxHeap.add(2);
+		minMaxHeap.add(9);
+		
+		System.out.println();
+		
 	}
 }

@@ -23,7 +23,8 @@ public class Graph {
 	
 	public void printGraph() {
 		for(int i = 0; i < verticesLength; ++i) {
-			System.out.println(adjacencyList[i].stream().map(x -> x.toString()).collect(Collectors.joining("->")));
+			System.out.println(Integer.toString(i) + "=>"
+					+ adjacencyList[i].stream().map(x -> x.toString()).collect(Collectors.joining("->")));
 		}
 	}
 	

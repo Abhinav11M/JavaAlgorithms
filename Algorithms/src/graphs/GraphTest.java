@@ -14,7 +14,12 @@ public class GraphTest {
 	    
 	    g.printGraph();
 	    
-	    System.out.println("Adjacency Matrix method");
+	    System.out.println("BFS Traversal");
+	    g.bfsTraversal(2);
+	    
+	    System.out.println("\nDFS Traversal");
+	    g.dfsTraversal(1);
+//	    System.out.println("Adjacency Matrix method");
 	    
 	    GraphAdjMatrix g1 = new GraphAdjMatrix(5);
 
@@ -26,7 +31,7 @@ public class GraphTest {
 	    g1.addEdge(2, 3); 
 	    g1.addEdge(3, 4); 
 	    
-	    g1.printAdjacencyMatrix();
+//	    g1.printAdjacencyMatrix();
 	}
 
 }
